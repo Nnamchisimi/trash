@@ -7,7 +7,7 @@ import numpy as np
 from models.experimental import attempt_load
 from utils.general import non_max_suppression, scale_coords
 
-def detect_objects(image_dir, output_dir, weights_path):
+def detect_objects(image_dir, output_dir, weights_path, classNames):
     results = []
 
     # Load the YOLOv7 model with the specified weights file
@@ -82,8 +82,11 @@ def detect_objects(image_dir, output_dir, weights_path):
 
     return results
 
+# List of class names, assuming two classes: "not trash" and "trash"
+classNames = ["not trash", "trash"]
+
 # Call the function with your desired parameters
 image_dir = r"C:\Users\CIU\Desktop\trash\images"
 output_dir = r"C:\Users\CIU\Desktop\trash\output"
 weights_path = r"C:\Users\CIU\Desktop\trash\epoch_054.pt"
-detection_results = detect_objects(image_dir, output_dir, weights_path)
+detection_results = detect_objects(image_dir, output_dir, weights_path, classNames)
