@@ -64,10 +64,29 @@ def detect_objects(image_dir, output_dir, weights_path, classNames):
                         print(f"Image: {filename}, Class: {classNames[int(cls)]}, Confidence: {conf}, Bounding Box: {x1, y1, x2, y2}")
 
                         # Determine if it's trash or not
-                        is_trash = 1 if classNames[int(cls)] == "trash" else 0
+                        is_trash = classNames[int(cls)] == "trash"
 
-                        # Append result to the list
-                        results.append((filename, classNames[int(cls)], conf, (x1, y1, x2, y2), is_trash))
+                        if is_trash:
+                            # Calculate the horizontal center of the bounding box
+                            center_x = (x1 + x2) / 2
+                            image_center_x = img0.shape[1] / 2
+
+                            # Calculate the angle based on the position
+                            angle = (center_x / img0.shape[1]) * 180
+
+                            # Determine the direction based on the angle
+                            if 0 <= angle <= 45:
+                                direction = "turn left"
+                            elif 135 <= angle <= 180:
+                                direction = "turn right"
+                            else:
+                                direction = "center"
+
+                            # Append result to the list with direction and angle
+                            results.append((filename, classNames[int(cls)], conf, (x1, y1, x2, y2), direction, angle))
+
+                            # Print direction and angle
+                            print(f"Direction: {direction}, Angle: {angle}")
 
             # Save the output image
             output_path = os.path.join(output_dir, filename)
@@ -89,4 +108,9 @@ classNames = ["not trash", "trash"]
 image_dir = r"C:\Users\CIU\Desktop\trash\images"
 output_dir = r"C:\Users\CIU\Desktop\trash\output"
 weights_path = r"C:\Users\CIU\Desktop\trash\epoch_054.pt"
+
 detection_results = detect_objects(image_dir, output_dir, weights_path, classNames)
+
+# Print detection results
+for result in detection_results:
+    print(result)
